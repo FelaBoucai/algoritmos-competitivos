@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <map>
+#include <algorithm>
 using namespace std;
 
 int n;
@@ -9,8 +9,10 @@ int T;
 
 
 
-vector<vector<int>> calles;
-vector<vector<int>> t;
+vector<vector<pair<int, int>>> calles_inv;
+
+vector<vector<long long>> M;
+vector<vector<short>> anterior;
 
 void datos(){
     int k;
@@ -19,91 +21,85 @@ void datos(){
 
     cin >> n >> m >> T;
 
-    calles.resize(n);
-    t.resize(n, vector<int>(n, -1));
+    calles_inv.resize(n);
 
     for(int i = 0; i < m; i++){
         cin >> k >> l >> o;
-        calles[k-1].push_back(l-1);
-        t[k-1][l-1] = o;
+        calles_inv[l-1].push_back({k-1, o});
     }
+    
+    M = vector<vector<long long>>(n, vector<long long>(n, -1));
+    anterior = vector<vector<short>>(n, vector<short>(n, -1));
 
 }
 
-map<int, vector<int>> memoria_max;
-map<int, vector<int>> siguiente;
 
 
-int maximo_paradas(int tiempo, int pos){
+long long tiempo_minimo(int cant_paradas, int pos){
 
-    // PODAS
-    if(tiempo > T){
-        return -2*n;
+    if(cant_paradas == 0){
+        if (pos == 0){
+            return 0;
+        }
+        return 1e+10;
     }
 
-    if(pos == n-1){
-        return 1;
+    if(M[cant_paradas][pos] != -1){
+        return M[cant_paradas][pos];
     }
 
-    // CREO LOS DIC SI NO ESTAN
-    if(memoria_max.find(tiempo) == memoria_max.end()){
-        memoria_max[tiempo] = vector<int>(n, -1);
-    }
-    if (siguiente.find(tiempo) == siguiente.end()) {
-        siguiente[tiempo] = vector<int>(n, -1);
-    }
-    
-    // USO LA MEMORIA
-    if(memoria_max[tiempo][pos] != -1){
-        return memoria_max[tiempo][pos];
-    }
+    long long minimo = 1e+10;
 
 
-    // veo si es mejor que el max, si es actualizo y elijo al mejor vecino
-    int maximo = -2*n;
-    int mejor_siguiente;
-
-    for (int v: calles[pos]){
-        int maximo2 = maximo_paradas(tiempo + t[pos][v], v)+1;
-        if(maximo < maximo2){
-            maximo = maximo2;
-            mejor_siguiente = v;
+    for(auto [v, tiempo]: calles_inv[pos]){
+        long long recursion = tiempo_minimo(cant_paradas - 1, v);
+        if(recursion < 1e+10 && recursion + tiempo < minimo){
+            minimo = recursion + tiempo;
+            anterior[cant_paradas][pos] = v;
         }
     }
 
-    memoria_max[tiempo][pos] = maximo;
-    siguiente[tiempo][pos] = mejor_siguiente;
+    M[cant_paradas][pos] = minimo;
+    return minimo;
 
-    return maximo;
+
 }
 
-vector<int> camino(){
-    int tiempo = 0;
-    int pos = 0;
-    vector<int> camino_final;
 
-    while(pos != n-1){
-        camino_final.push_back(pos+1);
-        int v = siguiente[tiempo][pos];
-
-        tiempo = tiempo + t[pos][v];
-        pos = v;
-    }
-    camino_final.push_back(n);
-
-    return camino_final;
-}
-
+long long res;
 int main(){
     datos();
-    int res = maximo_paradas(0,0);
-    cout << res << "\n";
 
-    vector<int> C = camino();
+    for(int k = 0; k<n; k++){
+        if(tiempo_minimo(k, n-1) <= T){
+            res = k;
+        }
+    }
 
-    for(int j = 0; j < C.size(); j++){
-        cout << C[j] << " ";
-    } 
+    cout << res + 1 << "\n";
+
+    int v;
+    int j;
+    j = n-1;
+    int h;
+    vector<int> sec(res);
+    h = 0;
+    
+
+    for(int i = res; i > 0; i--){
+        v = anterior[i][j];
+        sec[h] = v+1;
+        h++;
+        j = v;
+
+    }
+
+    reverse(sec.begin(), sec.end());
+
+    for(int i =0; i < res; i++){
+        cout << sec[i] << " ";
+    }
+    cout << n << " ";
 
     return 0;
 }

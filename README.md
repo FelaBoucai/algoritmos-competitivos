@@ -17,11 +17,12 @@ Repositorio integral con implementaciones algorítmicas, estructuras de datos de
 ### 2. [`02-programacion-dinamica/`](./02-programacion-dinamica) — Programación Dinámica Top-Down con Memoización (`C++17`)
 - **[`01_vacaciones_dp.cpp`](./02-programacion-dinamica/01_vacaciones_dp.cpp)**: Minimización de días de descanso bajo restricciones de transición de estados (Codeforces *Vacations*).
 - **[`02_gasoducto_dp.cpp`](./02-programacion-dinamica/02_gasoducto_dp.cpp)**: Optimización en $O(N)$ del costo de tendido de tuberías y pilares con cruces obligatorios a doble altura (Codeforces *Gas Pipeline*).
-- **[`03_viaje_dag_dp.cpp`](./02-programacion-dinamica/03_viaje_dag_dp.cpp)**: Camino de máxima longitud en un **DAG** pesado sujeto a presupuesto máximo $T$, con reconstrucción de camino óptimo mediante matriz de predecesores.
+- **[`03_viaje_dag_dp.cpp`](./02-programacion-dinamica/03_viaje_dag_dp.cpp)**: Camino de máxima cantidad de paradas en un **DAG** pesado sujeto a presupuesto máximo $T$ (Codeforces *Journey*), parametrizando el estado por $(k, v)$ (tiempo mínimo para llegar al nodo $v$ en exactamente $k$ paradas) en $O(V \cdot E)$ y reconstruyendo el camino óptimo con matriz de predecesores.
 
-### 3. [`03-greedy-y-camino-minimo/`](./03-greedy-y-camino-minimo) — Estrategias Greedy y Dijkstra en Grafo de Estados (`C++17`)
-- **[`01_consultas_greedy.cpp`](./03-greedy-y-camino-minimo/01_consultas_greedy.cpp)**: Algoritmo **Greedy** en $O(N \log N)$ para maximizar solicitudes atendidas según tiempo de espera acumulado.
-- **[`02_bicicletas_dijkstra.cpp`](./03-greedy-y-camino-minimo/02_bicicletas_dijkstra.cpp)**: Camino mínimo con **Dijkstra modificado** sobre un grafo pesado donde cada nodo permite actualizar el factor multiplicador de velocidad (Codeforces *Bicycles*).
+### 3. [`03-greedy-y-camino-minimo/`](./03-greedy-y-camino-minimo) — Estrategias Greedy, Dijkstra en Grafo de Estados y AGM (`C++17`)
+- **[`01_consultas_greedy.cpp`](./03-greedy-y-camino-minimo/01_consultas_greedy.cpp)**: Algoritmo **Greedy** en $O(N \log N)$ para maximizar solicitudes atendidas según tiempo de espera acumulado (Codeforces *Queue*).
+- **[`02_bicicletas_dijkstra.cpp`](./03-greedy-y-camino-minimo/02_bicicletas_dijkstra.cpp)**: Camino mínimo con **Dijkstra sobre grafo de estados** $(v, s)$ de dimensión $N \times 1001$, donde cada ciudad permite actualizar el factor de lentitud $s = \min(s, c_v)$ (Codeforces *Bicycles*).
+- **[`03_conexion_computadoras_agm_prim.cpp`](./03-greedy-y-camino-minimo/03_conexion_computadoras_agm_prim.cpp)**: Red de costo mínimo para conectar computadoras mediante routers locales o cableado con distancia Manhattan ponderada (Codeforces *Shichikuji and Power Grid*). Modela la instalación de routers como aristas hacia un **nodo virtual $0$** y resuelve el **Árbol Generador Mínimo (AGM)** mediante el **algoritmo de Prim denso** en $O(N^2)$ reconstruyendo tanto los nodos con router como las conexiones entre equipos.
 
 ---
 

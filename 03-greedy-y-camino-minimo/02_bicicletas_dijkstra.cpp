@@ -44,51 +44,50 @@ void datos(){
     }
 
 }
-long long INF = 1e+10;
+long long INF = 1e18;
+long long LL = 1;
 
-vector<long long> d;
-vector<int> pi;
 
 long long dijkstra(vector<vector<vector<tuple<int, int>>>> ady, vector<vector<int>> costos, int test){
-    int n = ady[test].size();
-    int lentitud = INF;
+    
+    int n = costos[test].size();
 
-    d.assign(n, INF);
-    pi.assign(n, -1);
+    vector<vector<long long>> d(n, vector<long long>(1001, INF));
 
-    priority_queue<
-        pair<long long, int>,
-        vector<pair<long long, int>>,
-        greater<pair<long long, int>>
-    > pq;
+    priority_queue<tuple<long long, int, int>, vector<tuple<long long, int, int>>, greater<tuple<long long, int, int>>> Q;
 
-    d[0] = 0;
-    pq.push({0, 0});
-    lentitud = costos[test][0];
+    d[0][costos[test][0]] = 0;
+    Q.emplace(0, 0, costos[test][0]);
 
-    while (!pq.empty()) {
-        long long dist = pq.top().first;
-        int u = pq.top().second;
-        pq.pop();
+    while(!Q.empty()){
+        auto[dist, u, lentitud] = Q.top();
+        Q.pop();
 
-        if (dist > d[u]) continue;
 
-        if(costos[test][u] < lentitud){
-            lentitud = costos[test][u];
-        }
+        for(auto& arista: ady[test][u]){
+            auto [v, peso] = arista;
 
-        for(int j = 0; j < ady[test][u].size(); j++){
-            int v = get<0>(ady[test][u][j]);
-            int peso = get<1>(ady[test][u][j]);
-            if (d[u] + peso * lentitud < d[v]) {
-                d[v] = d[u] + peso * lentitud;
-                pi[v] = u;
-                pq.push({d[v], v});
+            long long dist_nueva = dist + peso * lentitud * LL;
+
+            int bici_nueva = min(lentitud, costos[test][v]);
+
+            if(dist_nueva < d[v][bici_nueva]){
+                d[v][bici_nueva] = dist_nueva;
+                Q.emplace(dist_nueva, v, bici_nueva);
             }
         }
+
     }
 
-    return d[n - 1];
+
+
+
+
+    long long res = INF;
+    for(int i = 1; i <= 1000; i++){
+        res = min(res, d[n-1][i]);
+    }
+    return res;
 }
 
 
